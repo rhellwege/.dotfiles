@@ -1,5 +1,6 @@
 # Path to your oh-my-zsh installation.
 ZSH=/usr/share/oh-my-zsh/
+path+=/home/ry/.cargo/bin/
 
 
 lfcd () {
