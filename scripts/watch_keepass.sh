@@ -1,21 +1,18 @@
 #!/bin/sh
 
-dir='/home/ry/Games/factorio/saves/'
-a="inotifywait -mq -e delete $dir"
-b="/usr/bin/rsync -avz $dir/alia.zip ryan@ssh.rhellwege.xyz:/home/ryan/"
+dir='/home/ry/keepass'
+a="inotifywait -mrq -e move $dir"
+b="/usr/bin/rsync -avz $dir/Passwords.kdbx ryan@ssh.rhellwege.xyz:/home/ryan/"
 echo -e "establishing watches on /home/ry/Games/factorio/saves/" >> /tmp/rsync.log
 $a | while read directory event file
     do
-        echo $event
-        if [ "$event" = "DELETE" ]; then
-            echo -e "updating alia.zip..." >> /tmp/rsync.log
+        if [ $event = "MOVED_TO" ]; then
             echo -e "\n\n\n\n==========================" >> /tmp/rsync.log
-            echo -e "UPDATING FACTORIO SAVE..." >> /tmp/rsync.log
+            echo -e "UPDATING PASSWORDS..." >> /tmp/rsync.log
             date >> /tmp/rsync.log
             echo $read $directory $event $file >> /tmp/rsync.log
             echo -e "==========================" >> /tmp/rsync.log
             echo -e "\n\nuploading to rpi..." >> /tmp/rsync.log
             $b &>> /tmp/rsync.log
-            echo -e "==========================" >> /tmp/rsync.log
         fi
     done

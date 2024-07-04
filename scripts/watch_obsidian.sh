@@ -4,6 +4,7 @@ dir='/home/ry/Vault'
 a="inotifywait -mrq -e modify,move,create,delete $dir"
 b="/usr/bin/rsync -avz $dir ryan@ssh.rhellwege.xyz:/home/ryan/ --delete"
 c="/usr/bin/rsync -avz $dir mobile@192.168.6.39:/private/var/mobile/Containers/Data/Application/06299A78-B86A-4157-975D-A07DB92714D0/Documents/ --delete"
+echo -e "establishing watches on /home/ry/Games/factorio/saves/" >> /tmp/rsync.log
 $a | while read directory event file
     do
         echo -e "\n\n\n\n==========================" >> /tmp/rsync.log
