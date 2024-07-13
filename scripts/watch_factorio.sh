@@ -1,13 +1,14 @@
 #!/bin/sh
 
-dir='/home/ry/Games/factorio/saves/'
-a="inotifywait -mq -e delete $dir"
+dir='/home/ry/Games/factorio/saves'
+a="inotifywait -mrq -e delete $dir"
 b="/usr/bin/rsync -avz $dir/alia.zip ryan@ssh.rhellwege.xyz:/home/ryan/"
 echo -e "establishing watches on /home/ry/Games/factorio/saves/" >> /tmp/rsync.log
 $a | while read directory event file
     do
         echo $event
         if [ "$event" = "DELETE" ]; then
+            sleep 2
             echo -e "updating alia.zip..." >> /tmp/rsync.log
             echo -e "\n\n\n\n==========================" >> /tmp/rsync.log
             echo -e "UPDATING FACTORIO SAVE..." >> /tmp/rsync.log
