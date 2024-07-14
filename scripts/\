@@ -1,4 +1,0 @@
-#!/bin/sh
-exec /home/ry/scripts/watch_factorio.sh &
-exec /home/ry/scripts/watch_obsidian.sh & 
-exec /home/ry/scripts/watch_keepass.sh &
