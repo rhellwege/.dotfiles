@@ -32,6 +32,13 @@ if [[ "$(file -Lb --mime-type "$file")" =~ ^video ]]; then
         # Resize the collage.png if it's too large
         convert "$thumb_dir/collage.png" -resize 800x800\> "$thumb_dir/collage_resized.png"
         mv "$thumb_dir/collage_resized.png" "$thumb_dir/collage.png"
+
+        # Cleanup - Delete individual thumbnails
+        for file in $thumb_dir/thumbnail_*.png; do
+            if [ "$file" != "$thumb_dir/collage.png" ]; then
+                rm "$file"
+            fi
+        done
     fi
 
     kitty +kitten icat --silent --stdin no --transfer-mode file --place "${w}x${h}@${x}x${y}" "$thumb_dir/collage.png" < /dev/null > /dev/tty
