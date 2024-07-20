@@ -11,6 +11,7 @@ if [[ "$( file -Lb --mime-type "$file")" =~ ^image ]]; then
 fi
 
 if [[ "$( file -Lb --mime-type "$file")" =~ ^video ]]; then
+    mkdir -p "$HOME/.cache/lf_thumbnailer"
     thumb="$HOME/.cache/lf_thumbnailer/$(echo "$file" | tr '/ ' '-x')_thumbnail.png"
     if [ ! -f $thumb ]; then
         # create thumbnail
@@ -20,4 +21,4 @@ if [[ "$( file -Lb --mime-type "$file")" =~ ^video ]]; then
     exit 1
 fi
 
-pistol "$file"
+bat "$file"
