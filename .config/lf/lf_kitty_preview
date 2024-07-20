@@ -10,15 +10,31 @@ if [[ "$( file -Lb --mime-type "$file")" =~ ^image ]]; then
     exit 1
 fi
 
-if [[ "$( file -Lb --mime-type "$file")" =~ ^video ]]; then
+if [[ "$(file -Lb --mime-type "$file")" =~ ^video ]]; then
     mkdir -p "$HOME/.cache/lf_thumbnailer"
-    thumb="$HOME/.cache/lf_thumbnailer/$(echo "$file" | tr '/ ' '-x')_thumbnail.png"
-    if [ ! -f $thumb ]; then
-        # create thumbnail
-        ffmpeg -ss 00:00:01.000 -i "$file" -vframes 1 "$thumb" 1> /dev/null 2> /dev/null
+    thumb_dir="$HOME/.cache/lf_thumbnailer/$(echo "$file" | tr '/ ' '-x')_thumbnails"
+
+    if [ ! -d $thumb_dir ]; then
+        mkdir $thumb_dir
+        duration=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$file")
+        interval=$(bc <<< "scale=2; $duration / 16")
+
+        for ((i=1; i<=16; i++)); do
+            thumb="$thumb_dir/thumbnail_$i.png"
+            time=$(bc <<< "$interval * $i")
+            if [ ! -f $thumb ]; then
+                ffmpeg -ss $time -i "$file" -vf "scale=160:90" -vframes 1 "$thumb" 1> /dev/null 2> /dev/null
+            fi
+        done
+
+        montage $thumb_dir/*.png -tile 4x4 -geometry +0+0 "$thumb_dir/collage.png"
+
+        # Resize the collage.png if it's too large
+        convert "$thumb_dir/collage.png" -resize 800x800\> "$thumb_dir/collage_resized.png"
+        mv "$thumb_dir/collage_resized.png" "$thumb_dir/collage.png"
     fi
-    kitty +kitten icat --silent --stdin no --transfer-mode file --place "${w}x${h}@${x}x${y}" "$thumb" < /dev/null > /dev/tty
+
+    kitty +kitten icat --silent --stdin no --transfer-mode file --place "${w}x${h}@${x}x${y}" "$thumb_dir/collage.png" < /dev/null > /dev/tty
     exit 1
 fi
-
-bat "$file"
+bat --color always --pager never "$file"
