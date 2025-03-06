@@ -9,6 +9,10 @@
 ZSH=/home/ry/.oh-my-zsh
 path+=/home/ry/.cargo/bin/
 path+=/home/ry/.local/bin/
+path+=/home/ry/.local/bin/scripts
+path+=/usr/local/go/bin
+
+EDITOR="vi"
 
 # lfcd () {
 #     tmp="$(mktemp)"
@@ -183,3 +187,6 @@ fi
 #
 # eval "$(zoxide init zsh)"
 fastfetch
+
+if [ -e /home/ry/.nix-profile/etc/profile.d/nix.sh ]; then . /home/ry/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+. "/home/ry/.deno/env"
